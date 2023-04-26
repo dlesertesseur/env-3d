@@ -3,27 +3,18 @@ import { Canvas } from "@react-three/fiber";
 import { MapControls } from "@react-three/drei";
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { buildLOD } from "./builder";
+import { asignTypes } from "../api/process";
 
 const MapControl = ({ layout }) => {
-  const groupRef = useRef();
-
+  const sceneRef = useRef();
   useEffect(() => {
-    const pixelMeterRelation = 1;
-    if (groupRef.current && layout) {
-      console.log("groupRef.current ->", groupRef.current);
+    if (layout && sceneRef.current) {
+      asignTypes(layout);
 
-      //Probar <instancedMesh>
-
-      //Probar
-      //   <Detailed distances={[0, 10, 20]}>
-      //   <mesh geometry={high} />
-      //   <mesh geometry={mid} />
-      //   <mesh geometry={low} />
-      // <Detailed/>
-      
-      buildLOD(groupRef.current, layout, pixelMeterRelation);
+      console.log(" MapControl useEffect -> ");
+      buildLOD(sceneRef.current, layout);
     }
-  }, [groupRef, layout]);
+  }, [layout]);
 
   return (
     <Stack sx={{ height: "100%" }} spacing={0}>
@@ -33,7 +24,9 @@ const MapControl = ({ layout }) => {
         </Button>
       </Group>
 
-      <Canvas camera={{ position: [0, 10, 0] }}>
+      <Canvas camera={{ position: [0, 100, 0] }}>
+        <ambientLight />
+        <pointLight position={[10, 10, 10]} />
         <MapControls
           enableDamping={false}
           movementSpeed={3}
@@ -43,9 +36,8 @@ const MapControl = ({ layout }) => {
           maxPolarAngle={0}
           enableRotate={false}
         />
-        <scene ref={groupRef}>
-          <gridHelper />
-        </scene>
+        <group ref={sceneRef}></group>
+        <axesHelper/>
       </Canvas>
     </Stack>
   );

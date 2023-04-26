@@ -15,6 +15,7 @@ const AppLayout = () => {
 
   useEffect(() => {
     getAsyncData();
+    
   }, []);
 
   return (
